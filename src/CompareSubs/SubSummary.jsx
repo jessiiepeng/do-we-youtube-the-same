@@ -9,7 +9,7 @@ const SubSummary = (props) => {
     const toast = useToast()
 
     const getShareLink = () => {
-        const url = `${window.location.origin}/?compareWith=${noComparison ? myChannelId : compareWithChannelId}${noComparison ? "" : `&myChannelId=${myChannelId}`}`;
+        const url = `${window.location.origin}/do-we-youtube-the-same/?compareWith=${noComparison ? myChannelId : compareWithChannelId}${noComparison ? "" : `&myChannelId=${myChannelId}`}`;
         console.log('url', url)
         navigator.clipboard.writeText(url);
         toast({

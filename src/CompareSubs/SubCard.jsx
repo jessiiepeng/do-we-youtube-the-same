@@ -19,7 +19,7 @@ const SubCard = (props) => {
 
     const handleClick = () => {
         if (share) {
-            navigator.clipboard.writeText(window.location.origin + '/?compareWith=' + id)
+            navigator.clipboard.writeText(window.location.origin + '/do-we-youtube-the-same/?compareWith=' + id)
             toast({
                 title: 'Link copied to clipboard.',
                 description: "Share to your friends :)",
