@@ -27,8 +27,6 @@ const CompareSubs = (props) => {
     const SUBSCRIPTION_URL = "https://www.googleapis.com/youtube/v3/subscriptions";
     const API_KEY = process.env.REACT_APP_API_KEY
 
-    console.log('api key', API_KEY)
-
     const fetchSubs = async (channelId, nextPageToken, subsArray, setLoadingFalse = false) => {
         const url = `${SUBSCRIPTION_URL}?key=${API_KEY}&part=snippet&channelId=${channelId}&maxResults=50${nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
         console.log('url', url)
@@ -129,7 +127,7 @@ const CompareSubs = (props) => {
                 <Center>
                     <SubSummary same={myMatchedChannels.length}
                         distinct={myNonMatchedChannels.length + friendNonMatchedChannels.length}
-                        myChannelId={myChannelId} compareWithChannelId={compareWithChannelId} />
+                        myChannelId={myChannelId} compareWithChannelId={compareWithChannelId} noComparison={compareWithChannelId === ""} />
                 </Center>
                 <Flex padding="10" gap="10" flexDir="row" w="70vw">
                     <VStack w="50%">
