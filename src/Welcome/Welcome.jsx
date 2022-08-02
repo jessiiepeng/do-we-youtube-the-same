@@ -28,7 +28,7 @@ const Welcome = (props) => {
     }
 
     const submitChannelId = () => {
-        const newUrl = new URL(window.location.origin);
+        const newUrl = new URL(window.location.origin + '/do-we-youtube-the-same');
         newUrl.searchParams.append('myChannelId', inputValue);
         if (compareWithChannelId) {
             newUrl.searchParams.append('compareWith', compareWithChannelId);
