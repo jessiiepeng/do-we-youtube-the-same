@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Spinner, Text, HStack, VStack, Center, Flex, CircularProgress } from '@chakra-ui/react'
+import { Spinner, Text, VStack, Center, Flex, } from '@chakra-ui/react'
 
 import SubCard from "./SubCard";
 import axios from "axios";
@@ -29,7 +29,6 @@ const CompareSubs = (props) => {
 
     const fetchSubs = async (channelId, nextPageToken, subsArray, setLoadingFalse = false) => {
         const url = `${SUBSCRIPTION_URL}?key=${API_KEY}&part=snippet&channelId=${channelId}&maxResults=50${nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
-        console.log('url', url)
         try {
             const result = await axios.get(url);
             result['data']['items'].forEach((d) => {
@@ -43,7 +42,6 @@ const CompareSubs = (props) => {
             if ('nextPageToken' in result['data']) {
                 return fetchSubs(channelId, result['data']['nextPageToken'], subsArray, setLoadingFalse);
             } else {
-                console.log('final array', subsArray, 'set loading flase', setLoadingFalse)
                 if (setLoadingFalse) {
                     setLoading(false);
                 }
@@ -56,7 +54,6 @@ const CompareSubs = (props) => {
 
     /** Fetch my channel subscriptions */
     useEffect(() => {
-        console.log('my channel fetching', myChannelId)
         fetchSubs(myChannelId, "", []).then(val =>
             setMyChannels(val));
 
@@ -64,10 +61,8 @@ const CompareSubs = (props) => {
 
     /** Fetch my friend's subscriptions */
     useEffect(() => {
-        console.log('compare friend chanenle fetching', compareWithChannelId)
         setLoading(true);
         if (compareWithChannelId) {
-            console.log('here')
             fetchSubs(compareWithChannelId, "", [], true).then(val => {
                 setCompareChannels(val)
             });
@@ -78,29 +73,24 @@ const CompareSubs = (props) => {
 
     /** Sort subscriptions in alphabetical order by title and then update which ones match with each other */
     useEffect(() => {
-        console.log('Finding same/distinct subscriptions and returning sorted results:')
-        console.log('Before processing myChannels:', myChannels)
-        console.log('Before processing: compareChannels', compareChannels)
+        // console.log('Finding same/distinct subscriptions and returning sorted results:')
+        // console.log('Before processing myChannels:', myChannels)
+        // console.log('Before processing: compareChannels', compareChannels)
 
         // get matched ids
         let matchedIds = [];
         if (compareWithChannelId && compareChannels.length > 0) {
-            myChannels.forEach((channel) => {
-                const i = compareChannels.findIndex(c => c.id === channel.id);
-                if (i) {
-                    matchedIds.push(channel.id)
-                }
-            })
-            console.log('The matched ids:', matchedIds)
+            matchedIds = myChannels.filter(channel => compareChannels.some(c => c.id === channel.id))
+            // console.log('The matched ids:', matchedIds)
 
-            let myMatched = myChannels.filter(channel => matchedIds.indexOf(channel.id));
-            let myNonMatched = myChannels.filter((channel) => (matchedIds.indexOf(channel.id) === -1))
-            let friendNonMatched = compareChannels.filter((channel) => (matchedIds.indexOf(channel.id) === -1))
+            let myMatched = myChannels.filter(channel => matchedIds.some(c => c.id === channel.id));
+            let myNonMatched = myChannels.filter((channel) => !(matchedIds.some(c => c.id === channel.id)))
+            let friendNonMatched = compareChannels.filter((channel) => !(matchedIds.some(c => c.id === channel.id)))
 
 
-            console.log('my matched', myMatched);
-            console.log('my non matched', myNonMatched);
-            console.log('friend non matched', friendNonMatched)
+            // console.log('my matched', myMatched);
+            // console.log('my non matched', myNonMatched);
+            // console.log('friend non matched', friendNonMatched)
 
             setMyMatchedChannels(sortedChannels(myMatched))
             setMyNonMatchedChannels(sortedChannels(myNonMatched))
@@ -108,10 +98,6 @@ const CompareSubs = (props) => {
         } else {
             setMyNonMatchedChannels(sortedChannels(myChannels))
         }
-        console.log('matched ids', matchedIds)
-
-        // get array of my non matched subscriptions
-
 
     }, [loading, myChannels, compareChannels, compareWithChannelId, myChannelId, compareWithChannelId])
 
